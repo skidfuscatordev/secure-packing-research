@@ -1,0 +1,1 @@
+java -Djava.library.path='./driver-java/libs' -cp './driver-java/build/libs/java_component.jar' dev.zenrho.driver.classloader.ProtectedClassLoader './workspace/test/testest.jar' 'dev.sim0n.app.Main' 

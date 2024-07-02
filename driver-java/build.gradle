@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+// Set up task to ensure Rust library is built
+task buildRustLibrary(type: Exec) {
+    commandLine '../build.sh'
+}
+
+// Ensure Rust library is built before compiling Java code
+//compileJava.dependsOn buildRustLibrary
+
+// Custom run task to set library path
+task customRun(type: JavaExec) {
+    dependsOn build
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'dev.zenrho.driver.ProtectedClassLoader'
+    ///args = project.hasProperty('appArgs') ? project.appArgs.split(',') : []
+    systemProperty 'java.library.path', file('libs').absolutePath
+}
+
+// Set the main class for the 'application' plugin
+application {
+    mainClassName = 'dev.zenrho.driver.ProtectedClassLoader'
+}
